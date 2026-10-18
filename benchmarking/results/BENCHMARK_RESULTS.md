@@ -229,3 +229,32 @@ GC time over the measurement window was 28–286 ms across all runs, out of 20 s
   - Reuse a single `CaveatEnforcer`, or check range keys without one.
   - Reuse a scratch `Cursor[]` in the array version.
   - Use `ceilingKey` instead of `ceilingEntry`.
+
+## 10. Final versions: sorted array vs cleaned-up heap
+
+The two final branches, run back to back in one session with `-prof gc`, using the section 5 settings (2 × 10 s warmup, 3 × 10 s measurement, 8 threads). Raw results: `final-{array,heap}.{json,log}`.
+- **Array** (`perf/incremental-cursor-sort`): `PostingListCursors` with a shared `PostingOrder`.
+- **Heap** (`perf/heap-cursors`): the cleaned-up `CursorHeap`.
+  - Cursors start at their first entry inside the heap constructor.
+  - Matchers read `cursors.id(i)` and `cursors.entry(i)` from the heap's cached entries, so their checks skip `TreeMap.get`.
+  - `skipTo` keeps front cursors that didn't move in place.
+
+| Form | indexSize | Unpatched ops/s | Array ops/s (3 iterations) | Heap ops/s (3 iterations) | Heap vs array | ms/search (array → heap) | B/op array → heap |
+|---|---:|---:|---|---|---:|---|---|
+| CNF | 1,000 | 341.5 | 2,572.3 (2,568.8 / 2,432.2 / 2,716.1) | 2,990.1 (2,980.9 / 3,023.0 / 2,966.5) | **1.16×** | 3.1 → 2.7 | 3.51 → 3.42 MB (−2.7%) |
+| CNF | 10,000 | 6.6 | 261.5 (271.1 / 259.0 / 254.6) | 356.9 (376.0 / 364.5 / 330.2) | **1.36×** | 30.6 → 22.4 | 18.34 → 17.52 MB (−4.5%) |
+| DNF | 1,000 | 942.6 | 4,279.3 (4,208.5 / 4,259.8 / 4,369.5) | 4,525.2 (4,589.0 / 4,577.0 / 4,409.6) | 1.06× | 1.9 → 1.8 | 2.33 → 2.26 MB (−3.0%) |
+| DNF | 10,000 | 17.3 | 418.8 (423.8 / 426.3 / 406.5) | 534.6 (498.6 / 566.5 / 538.8) | **1.28×** | 19.1 → 15.0 | 13.55 → 12.93 MB (−4.6%) |
+
+### Reading the numbers
+- **The cleaned-up heap is now faster than the array in every case.** At 10k rules the per-iteration ranges don't overlap (CNF: 255–271 vs 330–376; DNF: 407–426 vs 499–567). DNF at 1k is within noise.
+- **Why the heap went from about equal (section 8) to ahead:**
+  - **Fewer lookups in the matcher checks:** `canContinue`, `sameConjunctionCheck` and `disjunctionEvaluationCheck` used to call `TreeMap.get` for each cursor they inspected. They now read the cached entry.
+  - **Fewer heap operations per step:** cursors in the front that didn't move are no longer pushed back into the heap and popped again.
+  - **Allocation hardly changes** (−3–5%), so the gain is CPU work, not GC.
+- **Caveat on run-to-run variance:** this run's array numbers are lower than the array runs in sections 7–8 (CNF 10k: 261 here, about 300 there), because separate JVM runs vary. Even against the best earlier array result, the heap is still about 19% ahead at CNF 10k and 12–17% ahead at DNF 10k.
+- **Is the comparison fair?** Most of the heap's lead comes from the cached-entry accessors, not from the heap itself. The array version could get a similar gain by caching each cursor's current entry, for example in a parallel `entries[]` kept in step with `pLists`. That would require the same matcher-side rewrite to `id(i)`/`entry(i)`.
+
+### Updated recommendation
+- **For speed:** take `perf/heap-cursors`. It is 6–36% faster than the array version and 5–54× faster than unpatched, it has the cleanest matchers (fewest lines, no `TreeMap` plumbing in the checks), and it passes the same tests.
+- **For the smallest possible change:** take `perf/incremental-cursor-sort`. The matchers stay nearly untouched and the old stable order is preserved exactly.
