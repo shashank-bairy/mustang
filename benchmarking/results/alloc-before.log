@@ -1,0 +1,234 @@
+# Detecting actual CPU count: 8 detected
+# JMH version: 1.37
+# VM version: JDK 17.0.20.1, OpenJDK 64-Bit Server VM, 17.0.20.1+0
+# VM invoker: /opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, 10 s each
+# Measurement: 2 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 8 threads, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search
+# Parameters: (form = CNF, indexSize = 1000)
+
+# Run progress: 0.00% complete, ETA 00:02:00
+# Fork: 1 of 1
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+393.319 ops/s
+Iteration   1: 401.876 ops/s
+                 gc.alloc.rate:      4029.618 MB/sec
+                 gc.alloc.rate.norm: 10523342.409 B/op
+                 gc.count:           120.000 counts
+                 gc.time:            71.000 ms
+
+Iteration   2: 385.141 ops/s
+                 gc.alloc.rate:      3861.276 MB/sec
+                 gc.alloc.rate.norm: 10520876.956 B/op
+                 gc.count:           115.000 counts
+                 gc.time:            66.000 ms
+
+
+
+Result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search":
+  393.509 ops/s
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate":
+  3945.447 MB/sec
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate.norm":
+  10522109.683 B/op
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.count":
+  117.500 counts
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.time":
+  68.500 ms
+
+
+# JMH version: 1.37
+# VM version: JDK 17.0.20.1, OpenJDK 64-Bit Server VM, 17.0.20.1+0
+# VM invoker: /opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, 10 s each
+# Measurement: 2 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 8 threads, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search
+# Parameters: (form = CNF, indexSize = 10000)
+
+# Run progress: 25.00% complete, ETA 00:01:32
+# Fork: 1 of 1
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+7.802 ops/s
+Iteration   1: 7.781 ops/s
+                 gc.alloc.rate:      1557.881 MB/sec
+                 gc.alloc.rate.norm: 212849795.402 B/op
+                 gc.count:           55.000 counts
+                 gc.time:            51.000 ms
+
+Iteration   2: 7.814 ops/s
+                 gc.alloc.rate:      1571.381 MB/sec
+                 gc.alloc.rate.norm: 213077283.818 B/op
+                 gc.count:           56.000 counts
+                 gc.time:            51.000 ms
+
+
+
+Result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search":
+  7.798 ops/s
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate":
+  1564.631 MB/sec
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate.norm":
+  212963539.610 B/op
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.count":
+  55.500 counts
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.time":
+  51.000 ms
+
+
+# JMH version: 1.37
+# VM version: JDK 17.0.20.1, OpenJDK 64-Bit Server VM, 17.0.20.1+0
+# VM invoker: /opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, 10 s each
+# Measurement: 2 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 8 threads, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search
+# Parameters: (form = DNF, indexSize = 1000)
+
+# Run progress: 50.00% complete, ETA 00:01:19
+# Fork: 1 of 1
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+931.967 ops/s
+Iteration   1: 1011.800 ops/s
+                 gc.alloc.rate:      2874.925 MB/sec
+                 gc.alloc.rate.norm: 2980242.064 B/op
+                 gc.count:           108.000 counts
+                 gc.time:            55.000 ms
+
+Iteration   2: 1006.865 ops/s
+                 gc.alloc.rate:      2860.144 MB/sec
+                 gc.alloc.rate.norm: 2979954.579 B/op
+                 gc.count:           108.000 counts
+                 gc.time:            54.000 ms
+
+
+
+Result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search":
+  1009.333 ops/s
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate":
+  2867.535 MB/sec
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate.norm":
+  2980098.322 B/op
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.count":
+  108.000 counts
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.time":
+  54.500 ms
+
+
+# JMH version: 1.37
+# VM version: JDK 17.0.20.1, OpenJDK 64-Bit Server VM, 17.0.20.1+0
+# VM invoker: /opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java
+# VM options: <none>
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, 10 s each
+# Measurement: 2 iterations, 10 s each
+# Timeout: 10 min per iteration
+# Threads: 8 threads, will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search
+# Parameters: (form = DNF, indexSize = 10000)
+
+# Run progress: 75.00% complete, ETA 00:00:36
+# Fork: 1 of 1
+# Warmup Iteration   1: SLF4J(W): No SLF4J providers were found.
+SLF4J(W): Defaulting to no-operation (NOP) logger implementation
+SLF4J(W): See https://www.slf4j.org/codes.html#noProviders for further details.
+19.023 ops/s
+Iteration   1: 18.954 ops/s
+                 gc.alloc.rate:      409.171 MB/sec
+                 gc.alloc.rate.norm: 22817958.059 B/op
+                 gc.count:           17.000 counts
+                 gc.time:            15.000 ms
+
+Iteration   2: 18.742 ops/s
+                 gc.alloc.rate:      404.846 MB/sec
+                 gc.alloc.rate.norm: 22822769.407 B/op
+                 gc.count:           16.000 counts
+                 gc.time:            13.000 ms
+
+
+
+Result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search":
+  18.848 ops/s
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate":
+  407.009 MB/sec
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.alloc.rate.norm":
+  22820363.733 B/op
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.count":
+  16.500 counts
+
+Secondary result "com.phonepe.mustang.benchmark.benchmarks.MustangRangeSearchBenchmark.search:gc.time":
+  14.000 ms
+
+
+# Run complete. Total time: 00:02:29
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                              (form)  (indexSize)   Mode  Cnt          Score   Error   Units
+MustangRangeSearchBenchmark.search                        CNF         1000  thrpt    2        393.509           ops/s
+MustangRangeSearchBenchmark.search:gc.alloc.rate          CNF         1000  thrpt    2       3945.447          MB/sec
+MustangRangeSearchBenchmark.search:gc.alloc.rate.norm     CNF         1000  thrpt    2   10522109.683            B/op
+MustangRangeSearchBenchmark.search:gc.count               CNF         1000  thrpt    2        235.000          counts
+MustangRangeSearchBenchmark.search:gc.time                CNF         1000  thrpt    2        137.000              ms
+MustangRangeSearchBenchmark.search                        CNF        10000  thrpt    2          7.798           ops/s
+MustangRangeSearchBenchmark.search:gc.alloc.rate          CNF        10000  thrpt    2       1564.631          MB/sec
+MustangRangeSearchBenchmark.search:gc.alloc.rate.norm     CNF        10000  thrpt    2  212963539.610            B/op
+MustangRangeSearchBenchmark.search:gc.count               CNF        10000  thrpt    2        111.000          counts
+MustangRangeSearchBenchmark.search:gc.time                CNF        10000  thrpt    2        102.000              ms
+MustangRangeSearchBenchmark.search                        DNF         1000  thrpt    2       1009.333           ops/s
+MustangRangeSearchBenchmark.search:gc.alloc.rate          DNF         1000  thrpt    2       2867.535          MB/sec
+MustangRangeSearchBenchmark.search:gc.alloc.rate.norm     DNF         1000  thrpt    2    2980098.322            B/op
+MustangRangeSearchBenchmark.search:gc.count               DNF         1000  thrpt    2        216.000          counts
+MustangRangeSearchBenchmark.search:gc.time                DNF         1000  thrpt    2        109.000              ms
+MustangRangeSearchBenchmark.search                        DNF        10000  thrpt    2         18.848           ops/s
+MustangRangeSearchBenchmark.search:gc.alloc.rate          DNF        10000  thrpt    2        407.009          MB/sec
+MustangRangeSearchBenchmark.search:gc.alloc.rate.norm     DNF        10000  thrpt    2   22820363.733            B/op
+MustangRangeSearchBenchmark.search:gc.count               DNF        10000  thrpt    2         33.000          counts
+MustangRangeSearchBenchmark.search:gc.time                DNF        10000  thrpt    2         28.000              ms
+
+Benchmark result is saved to /Users/shashankbairy/os/mustang/benchmarking/results/alloc-before.json
