@@ -26,7 +26,6 @@ import com.phonepe.mustang.preoperation.ChainOperator;
 import com.phonepe.mustang.search.Query;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -39,21 +38,12 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 @Data
 @Builder
 @AllArgsConstructor
 public class CNFMatcher {
-    /** Order of posting lists by current entry: id, then type, then order; exhausted lists (null entry) last. */
-    private static final Comparator<DisjunctionPostingEntry> POSTING_ORDER = Comparator.nullsLast((a, b) -> {
-        int c = ObjectUtils.compare(a.getIId(), b.getIId(), true);
-        if (c == 0) {
-            c = ObjectUtils.compare(a.getType(), b.getType(), true);
-        }
-        return c != 0 ? c : Integer.compare(a.getOrder(), b.getOrder());
-    });
     private final CNFInvertedIndex<DisjunctionPostingEntry> invertedIndex;
     private final Query query;
     private final Map<String, Criteria> allCriterias;
@@ -123,7 +113,7 @@ public class CNFMatcher {
                                             .getKey(),
                                     nextID);
                         }
-                        PostingListCursors.skipTo(pLists, nextID, POSTING_ORDER);
+                        PostingListCursors.skipTo(pLists, nextID, PostingOrder.CNF);
                     }
                 });
 
@@ -158,7 +148,7 @@ public class CNFMatcher {
                                 .firstEntry()
                                 .getValue()
                                 .getIId()));
-        PostingListCursors.sort(pLists, POSTING_ORDER);
+        PostingListCursors.sort(pLists, PostingOrder.CNF);
     }
 
     private boolean canContinue(

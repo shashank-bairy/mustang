@@ -26,7 +26,6 @@ import com.phonepe.mustang.preoperation.ChainOperator;
 import com.phonepe.mustang.search.Query;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -46,9 +45,6 @@ import org.apache.commons.lang3.tuple.MutablePair;
 @AllArgsConstructor
 public class DNFMatcher {
 
-    /** Order of posting lists by current entry (id, then type); exhausted lists (null entry) last. */
-    private static final Comparator<ConjunctionPostingEntry> POSTING_ORDER = Comparator.nullsLast(
-            Comparator.naturalOrder());
     private final DNFInvertedIndex<ConjunctionPostingEntry> invertedIndex;
     private final Query query;
     private final Map<String, Criteria> allCriterias;
@@ -118,7 +114,7 @@ public class DNFMatcher {
                                             .getKey(),
                                     nextID);
                         }
-                        PostingListCursors.skipTo(pLists, nextID, POSTING_ORDER);
+                        PostingListCursors.skipTo(pLists, nextID, PostingOrder.DNF);
                     }
                 });
         return result;
@@ -151,7 +147,7 @@ public class DNFMatcher {
                                 .firstEntry()
                                 .getValue()
                                 .getIId()));
-        PostingListCursors.sort(pLists, POSTING_ORDER);
+        PostingListCursors.sort(pLists, PostingOrder.DNF);
     }
 
     private boolean canContinue(
