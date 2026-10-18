@@ -1,0 +1,604 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyCNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10"
+        },
+        "primaryMetric" : {
+            "score" : 665103.069134336,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 665103.069134336,
+                "50.0" : 665103.069134336,
+                "90.0" : 665103.069134336,
+                "95.0" : 665103.069134336,
+                "99.0" : 665103.069134336,
+                "99.9" : 665103.069134336,
+                "99.99" : 665103.069134336,
+                "99.999" : 665103.069134336,
+                "99.9999" : 665103.069134336,
+                "100.0" : 665103.069134336
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    665103.069134336
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyCNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 251990.7521375515,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 251990.7521375515,
+                "50.0" : 251990.7521375515,
+                "90.0" : 251990.7521375515,
+                "95.0" : 251990.7521375515,
+                "99.0" : 251990.7521375515,
+                "99.9" : 251990.7521375515,
+                "99.99" : 251990.7521375515,
+                "99.999" : 251990.7521375515,
+                "99.9999" : 251990.7521375515,
+                "100.0" : 251990.7521375515
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    251990.7521375515
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyCNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 40298.36091053457,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 40298.36091053457,
+                "50.0" : 40298.36091053457,
+                "90.0" : 40298.36091053457,
+                "95.0" : 40298.36091053457,
+                "99.0" : 40298.36091053457,
+                "99.9" : 40298.36091053457,
+                "99.99" : 40298.36091053457,
+                "99.999" : 40298.36091053457,
+                "99.9999" : 40298.36091053457,
+                "100.0" : 40298.36091053457
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    40298.36091053457
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyCNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 5168.534193686628,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 5168.534193686628,
+                "50.0" : 5168.534193686628,
+                "90.0" : 5168.534193686628,
+                "95.0" : 5168.534193686628,
+                "99.0" : 5168.534193686628,
+                "99.9" : 5168.534193686628,
+                "99.99" : 5168.534193686628,
+                "99.999" : 5168.534193686628,
+                "99.9999" : 5168.534193686628,
+                "100.0" : 5168.534193686628
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    5168.534193686628
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyDNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10"
+        },
+        "primaryMetric" : {
+            "score" : 565054.5427361852,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 565054.5427361852,
+                "50.0" : 565054.5427361852,
+                "90.0" : 565054.5427361852,
+                "95.0" : 565054.5427361852,
+                "99.0" : 565054.5427361852,
+                "99.9" : 565054.5427361852,
+                "99.99" : 565054.5427361852,
+                "99.999" : 565054.5427361852,
+                "99.9999" : 565054.5427361852,
+                "100.0" : 565054.5427361852
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    565054.5427361852
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyDNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 115982.09559262972,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 115982.09559262972,
+                "50.0" : 115982.09559262972,
+                "90.0" : 115982.09559262972,
+                "95.0" : 115982.09559262972,
+                "99.0" : 115982.09559262972,
+                "99.9" : 115982.09559262972,
+                "99.99" : 115982.09559262972,
+                "99.999" : 115982.09559262972,
+                "99.9999" : 115982.09559262972,
+                "100.0" : 115982.09559262972
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    115982.09559262972
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyDNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 10690.316126901786,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 10690.316126901786,
+                "50.0" : 10690.316126901786,
+                "90.0" : 10690.316126901786,
+                "95.0" : 10690.316126901786,
+                "99.0" : 10690.316126901786,
+                "99.9" : 10690.316126901786,
+                "99.99" : 10690.316126901786,
+                "99.999" : 10690.316126901786,
+                "99.9999" : 10690.316126901786,
+                "100.0" : 10690.316126901786
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    10690.316126901786
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangOnlyDNFSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 1017.1675938288336,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1017.1675938288336,
+                "50.0" : 1017.1675938288336,
+                "90.0" : 1017.1675938288336,
+                "95.0" : 1017.1675938288336,
+                "99.0" : 1017.1675938288336,
+                "99.9" : 1017.1675938288336,
+                "99.99" : 1017.1675938288336,
+                "99.999" : 1017.1675938288336,
+                "99.9999" : 1017.1675938288336,
+                "100.0" : 1017.1675938288336
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1017.1675938288336
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10"
+        },
+        "primaryMetric" : {
+            "score" : 568574.0538289727,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 568574.0538289727,
+                "50.0" : 568574.0538289727,
+                "90.0" : 568574.0538289727,
+                "95.0" : 568574.0538289727,
+                "99.0" : 568574.0538289727,
+                "99.9" : 568574.0538289727,
+                "99.99" : 568574.0538289727,
+                "99.999" : 568574.0538289727,
+                "99.9999" : 568574.0538289727,
+                "100.0" : 568574.0538289727
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    568574.0538289727
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "100"
+        },
+        "primaryMetric" : {
+            "score" : 167081.438825278,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 167081.438825278,
+                "50.0" : 167081.438825278,
+                "90.0" : 167081.438825278,
+                "95.0" : 167081.438825278,
+                "99.0" : 167081.438825278,
+                "99.9" : 167081.438825278,
+                "99.99" : 167081.438825278,
+                "99.999" : 167081.438825278,
+                "99.9999" : 167081.438825278,
+                "100.0" : 167081.438825278
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    167081.438825278
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "1000"
+        },
+        "primaryMetric" : {
+            "score" : 12616.850303808364,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 12616.850303808364,
+                "50.0" : 12616.850303808364,
+                "90.0" : 12616.850303808364,
+                "95.0" : 12616.850303808364,
+                "99.0" : 12616.850303808364,
+                "99.9" : 12616.850303808364,
+                "99.99" : 12616.850303808364,
+                "99.999" : 12616.850303808364,
+                "99.9999" : 12616.850303808364,
+                "100.0" : 12616.850303808364
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    12616.850303808364
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "com.phonepe.mustang.benchmark.benchmarks.MustangSearchBenchmark.search",
+        "mode" : "thrpt",
+        "threads" : 8,
+        "forks" : 1,
+        "jvm" : "/opt/homebrew/Cellar/openjdk@17/17.0.20.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "17.0.20.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "17.0.20.1+0",
+        "warmupIterations" : 1,
+        "warmupTime" : "10 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 1,
+        "measurementTime" : "10 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "indexSize" : "10000"
+        },
+        "primaryMetric" : {
+            "score" : 1200.7296814976553,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1200.7296814976553,
+                "50.0" : 1200.7296814976553,
+                "90.0" : 1200.7296814976553,
+                "95.0" : 1200.7296814976553,
+                "99.0" : 1200.7296814976553,
+                "99.9" : 1200.7296814976553,
+                "99.99" : 1200.7296814976553,
+                "99.999" : 1200.7296814976553,
+                "99.9999" : 1200.7296814976553,
+                "100.0" : 1200.7296814976553
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    1200.7296814976553
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+
