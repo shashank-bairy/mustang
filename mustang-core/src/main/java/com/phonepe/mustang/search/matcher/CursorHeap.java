@@ -35,7 +35,8 @@ import com.phonepe.mustang.index.core.Key;
  *
  * <p>Layout: a small sorted {@code front} holding the smallest cursors, then a binary min-heap with the rest. Every
  * front cursor is smaller than every heap cursor. The matcher only reads the first few ranks, so cursors are popped
- * from the heap into the front lazily, on demand.
+ * from the heap into the front lazily, on demand; the next rank after the front is read from the heap root without
+ * popping it.
  */
 final class CursorHeap<E> {
     private final Entry<Key, MutablePair<Integer, TreeMap<Integer, E>>>[] lists;
@@ -118,10 +119,11 @@ final class CursorHeap<E> {
     }
 
     private int cursorAt(final int rank) {
-        while (frontSize <= rank) {
+        while (frontSize < rank) {
             front[frontSize++] = pop();
         }
-        return front[rank];
+        // the next rank is the heap root: peek it, so a cursor only looked at is never popped and pushed back
+        return rank < frontSize ? front[rank] : heap[0];
     }
 
     private Integer currentId(final int list) {
