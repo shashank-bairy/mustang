@@ -46,3 +46,52 @@ Throughput is in ops/s (higher is better), with the 3 measurement iterations in 
 - `mustang-models` 220/220, `mustang-core` 253/253, `BUILD SUCCESS`.
 - `SearchEquivalenceTest` checks search results against a fingerprint recorded on the unpatched build: 2,000 random CNF/DNF criteria and 50 events. It also checks that scan equals brute-force `evaluate()`, and covers ties.
 - No change to index layout, scoring or results.
+
+## CPU profile (JFR)
+
+### How it was measured
+- Java Flight Recorder (`-prof jfr`), recording the measurement iterations only. Before and after use the same benchmark, settings and seed.
+- **CPU per search** = process CPU from `jdk.CPULoad` (about 7.4–7.8 of 8 cores busy) ÷ throughput.
+- **Phases:** each CPU sample (`jdk.ExecutionSample`, full stack) is assigned to the first phase method found walking down from the top of its stack:
+  - **Cursor ordering:** sorting posting lists and `skipTo`. This is what this change targets.
+  - **Key matching:** `getPostingLists` / `getMatchingKeys` / `CaveatEnforcer` (for range keys this includes `RangeDetail.of`).
+  - **Matcher checks:** `canContinue`, `sameConjunctionCheck`, `disjunctionEvaluationCheck`, `getCounters` and similar.
+  - **Query:** building the query and parsing the request with JsonPath.
+
+### Range rules (`MustangRangeSearchBenchmark`)
+
+| Workload | Build | CPU / search | Cursor ordering | Key matching | Matcher checks | Other |
+|---|---|---:|---:|---:|---:|---:|
+| CNF 1,000 | Before | 22.11 ms | 19.91 ms | 1,758 µs | 357 µs | 83 µs |
+| CNF 1,000 | After (array) | 2,925 µs (7.6× less) | 639 µs | 1,912 µs | 318 µs | 56 µs |
+| CNF 10,000 | Before | 1,243.25 ms | 1,223.86 ms | 10.58 ms | 6,660 µs | 2,141 µs |
+| CNF 10,000 | After (array) | 28.65 ms (43.4× less) | 13.11 ms | 10.44 ms | 4,226 µs | 874 µs |
+| DNF 1,000 | Before | 8,677 µs | 7,224 µs | 1,310 µs | 91 µs | 52 µs |
+| DNF 1,000 | After (array) | 1,847 µs (4.7× less) | 331 µs | 1,368 µs | 98 µs | 50 µs |
+| DNF 10,000 | Before | 457.00 ms | 444.75 ms | 8,734 µs | 2,066 µs | 1,456 µs |
+| DNF 10,000 | After (array) | 17.77 ms (25.7× less) | 6,637 µs | 9,449 µs | 1,249 µs | 437 µs |
+
+### Equality rules (repo's original benchmarks, `values` predicates)
+These are the existing `MustangSearchBenchmark`, `MustangOnlyDNFSearchBenchmark` (indexes CNF) and `MustangOnlyCNFSearchBenchmark` (indexes DNF), each with its own JMH settings: 1 × 10 s measurement, so expect more noise. The per-call `prepareContext` setup is excluded.
+
+| Workload | Build | CPU / search | Cursor ordering | Key matching | Matcher checks | Query | Other |
+|---|---|---:|---:|---:|---:|---:|---:|
+| CNF only 1,000 | Before | 923 µs | 238 µs | 191 µs | 435 µs | 47 µs | 13 µs |
+| CNF only 1,000 | After (array) | 699 µs (1.3× less) | 69 µs | 121 µs | 454 µs | 42 µs | 12 µs |
+| CNF only 10,000 | Before | 10.48 ms | 3,676 µs | 1,522 µs | 4,497 µs | 705 µs | 77 µs |
+| CNF only 10,000 | After (array) | 7,090 µs (1.5× less) | 903 µs | 1,359 µs | 4,163 µs | 600 µs | 65 µs |
+| DNF only 1,000 | Before | 150 µs | 10 µs | 112 µs | 8 µs | 12 µs | 7 µs |
+| DNF only 1,000 | After (array) | 179 µs (≈ same, within noise) | 7 µs | 132 µs | 12 µs | 17 µs | 10 µs |
+| DNF only 10,000 | Before | 1,335 µs | 246 µs | 753 µs | 228 µs | 54 µs | 54 µs |
+| DNF only 10,000 | After (array) | 1,262 µs (≈ same, within noise) | 104 µs | 829 µs | 230 µs | 45 µs | 53 µs |
+| Mixed 1,000 | Before | 644 µs | 124 µs | 137 µs | 329 µs | 40 µs | 15 µs |
+| Mixed 1,000 | After (array) | 637 µs (≈ same, within noise) | 51 µs | 178 µs | 350 µs | 43 µs | 15 µs |
+| Mixed 10,000 | Before | 8,067 µs | 2,188 µs | 2,008 µs | 3,271 µs | 498 µs | 103 µs |
+| Mixed 10,000 | After (array) | 6,144 µs (1.3× less) | 619 µs | 1,789 µs | 3,188 µs | 417 µs | 131 µs |
+
+### Findings
+- **Range rules:** cursor ordering drops from 1,224 ms to 13.1 ms per search (CNF 10k). In the before build, the hottest methods are the comparator chain: `getIdSafely`, `getOrderSafely`, the comparator lambdas and `TreeMap.getEntry`. After the change, the biggest single cost is `PostingListCursors.skipTo` itself (the merge and `arraycopy`).
+- **Equality rules:** a request value matches only a few keys, so sorting was a smaller share (7–35%) to begin with. Cursor ordering still drops 2–4×, but the matcher checks are unchanged. CNF's `disjunctionEvaluationCheck` / `sameConjunctionCheck` still do 2 `TreeMap.get` per list (4.5 → 4.2 ms at CNF 10k).
+- **Remaining costs, not touched by this change:**
+  - **Range keys:** `RangeDetail.of` re-parses each range key string on every check (`Double.parseDouble` and `String.split` are the top frames). Caching parsed bounds would cut the largest remaining chunk.
+  - **Equality keys:** `getMatchingKeys` scans every key in the index and builds a `CaveatEnforcer` per key. A direct lookup by attribute and value would avoid the scan.
