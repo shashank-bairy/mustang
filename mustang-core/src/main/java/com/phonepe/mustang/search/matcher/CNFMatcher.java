@@ -46,15 +46,14 @@ import org.apache.commons.lang3.tuple.MutablePair;
 @Builder
 @AllArgsConstructor
 public class CNFMatcher {
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> ID_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getIdSafely(e1), getIdSafely(e2), true));
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> TYPE_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getTypeSafely(e1), getTypeSafely(e2), true));
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> ORDER_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getOrderSafely(e1), getOrderSafely(e2), true));
+    /** Order of posting lists by current entry: id, then type, then order; exhausted lists (null entry) last. */
+    private static final Comparator<DisjunctionPostingEntry> POSTING_ORDER = Comparator.nullsLast((a, b) -> {
+        int c = ObjectUtils.compare(a.getIId(), b.getIId(), true);
+        if (c == 0) {
+            c = ObjectUtils.compare(a.getType(), b.getType(), true);
+        }
+        return c != 0 ? c : Integer.compare(a.getOrder(), b.getOrder());
+    });
     private final CNFInvertedIndex<DisjunctionPostingEntry> invertedIndex;
     private final Query query;
     private final Map<String, Criteria> allCriterias;
@@ -65,33 +64,6 @@ public class CNFMatcher {
             final TreeMap<Integer, DisjunctionPostingEntry> map,
             final Integer iId) {
         return Objects.nonNull(iId) ? map.get(iId) : null;
-    }
-
-    private static Integer getIdSafely(
-            final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getIId() : null;
-    }
-
-    private static PredicateType getTypeSafely(
-            final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getType() : null;
-    }
-
-    private static Integer getOrderSafely(
-            Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getOrder() : Integer.MAX_VALUE;
     }
 
     public Map<String, Double> getMatches() {
@@ -151,7 +123,7 @@ public class CNFMatcher {
                                             .getKey(),
                                     nextID);
                         }
-                        skipTo(pLists, nextID);
+                        PostingListCursors.skipTo(pLists, nextID, POSTING_ORDER);
                     }
                 });
 
@@ -186,7 +158,7 @@ public class CNFMatcher {
                                 .firstEntry()
                                 .getValue()
                                 .getIId()));
-        sortByCurrentEntriesCNF(pLists);
+        PostingListCursors.sort(pLists, POSTING_ORDER);
     }
 
     private boolean canContinue(
@@ -198,13 +170,6 @@ public class CNFMatcher {
                                 .getValue(),
                                 pLists[k - 1].getValue()
                                         .getKey()));
-    }
-
-    private void sortByCurrentEntriesCNF(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists) {
-        Arrays.sort(pLists,
-                ID_COMPARATOR.thenComparing(TYPE_COMPARATOR)
-                        .thenComparing(ORDER_COMPARATOR));
     }
 
     private boolean sameConjunctionCheck(
@@ -288,21 +253,6 @@ public class CNFMatcher {
         return Arrays.stream(disjunctionCounters.get(iId))
                 .map(x -> -1 * x)
                 .toArray(Integer[]::new);
-    }
-
-    private void skipTo(final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists,
-            final int nextID) {
-        IntStream.range(0, pLists.length)
-                .filter(l -> Objects.nonNull(pLists[l].getValue()
-                        .getKey())
-                        && pLists[l].getValue()
-                                .getKey() < nextID)
-                .forEach(l -> pLists[l].getValue()
-                        .setLeft(pLists[l].getValue()
-                                .getValue()
-                                .navigableKeySet()
-                                .ceiling(nextID)));
-        sortByCurrentEntriesCNF(pLists);
     }
 
 }

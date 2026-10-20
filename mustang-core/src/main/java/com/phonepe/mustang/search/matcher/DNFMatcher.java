@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 @Data
@@ -47,9 +46,9 @@ import org.apache.commons.lang3.tuple.MutablePair;
 @AllArgsConstructor
 public class DNFMatcher {
 
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, ConjunctionPostingEntry>>>> COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getPostingEntry(e1), getPostingEntry(e2), true));
+    /** Order of posting lists by current entry (id, then type); exhausted lists (null entry) last. */
+    private static final Comparator<ConjunctionPostingEntry> POSTING_ORDER = Comparator.nullsLast(
+            Comparator.naturalOrder());
     private final DNFInvertedIndex<ConjunctionPostingEntry> invertedIndex;
     private final Query query;
     private final Map<String, Criteria> allCriterias;
@@ -60,14 +59,6 @@ public class DNFMatcher {
             final TreeMap<Integer, ConjunctionPostingEntry> map,
             final Integer iId) {
         return Objects.nonNull(iId) ? map.get(iId) : null;
-    }
-
-    private static ConjunctionPostingEntry getPostingEntry(
-            final Entry<Key, MutablePair<Integer, TreeMap<Integer, ConjunctionPostingEntry>>> entry) {
-        return getConjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
     }
 
     public Map<String, Double> getMatches() {
@@ -127,7 +118,7 @@ public class DNFMatcher {
                                             .getKey(),
                                     nextID);
                         }
-                        skipTo(pLists, nextID);
+                        PostingListCursors.skipTo(pLists, nextID, POSTING_ORDER);
                     }
                 });
         return result;
@@ -160,7 +151,7 @@ public class DNFMatcher {
                                 .firstEntry()
                                 .getValue()
                                 .getIId()));
-        sortByCurrentEntriesDNF(pLists);
+        PostingListCursors.sort(pLists, POSTING_ORDER);
     }
 
     private boolean canContinue(
@@ -177,11 +168,6 @@ public class DNFMatcher {
     private boolean conjunctionRejectionCheck(final ConjunctionPostingEntry conjunctionPostingEntry) {
         return Objects.isNull(conjunctionPostingEntry)
                 || PredicateType.EXCLUDED.equals(conjunctionPostingEntry.getType());
-    }
-
-    private void sortByCurrentEntriesDNF(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, ConjunctionPostingEntry>>>[] pLists) {
-        Arrays.sort(pLists, COMPARATOR);
     }
 
     private boolean sameConjunctionCheck(
@@ -228,21 +214,6 @@ public class DNFMatcher {
                     .getScore(query.getRequestContext());
         }
         return 0;
-    }
-
-    private void skipTo(final Entry<Key, MutablePair<Integer, TreeMap<Integer, ConjunctionPostingEntry>>>[] pLists,
-            final int nextID) {
-        IntStream.range(0, pLists.length)
-                .filter(l -> Objects.nonNull(pLists[l].getValue()
-                        .getKey())
-                        && pLists[l].getValue()
-                                .getKey() < nextID)
-                .forEach(l -> pLists[l].getValue()
-                        .setLeft(pLists[l].getValue()
-                                .getValue()
-                                .navigableKeySet()
-                                .ceiling(nextID)));
-        sortByCurrentEntriesDNF(pLists);
     }
 
 }
