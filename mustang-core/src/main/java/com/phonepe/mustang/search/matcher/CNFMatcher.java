@@ -46,53 +46,19 @@ import org.apache.commons.lang3.tuple.MutablePair;
 @Builder
 @AllArgsConstructor
 public class CNFMatcher {
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> ID_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getIdSafely(e1), getIdSafely(e2), true));
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> TYPE_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getTypeSafely(e1), getTypeSafely(e2), true));
-    private static final Comparator<Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>> ORDER_COMPARATOR = (
-            e1,
-            e2) -> (ObjectUtils.compare(getOrderSafely(e1), getOrderSafely(e2), true));
+    /** Order of posting lists by current entry: id, then type, then order; exhausted lists (null entry) last. */
+    private static final Comparator<DisjunctionPostingEntry> POSTING_ORDER = Comparator.nullsLast((a, b) -> {
+        int c = ObjectUtils.compare(a.getIId(), b.getIId(), true);
+        if (c == 0) {
+            c = ObjectUtils.compare(a.getType(), b.getType(), true);
+        }
+        return c != 0 ? c : Integer.compare(a.getOrder(), b.getOrder());
+    });
     private final CNFInvertedIndex<DisjunctionPostingEntry> invertedIndex;
     private final Query query;
     private final Map<String, Criteria> allCriterias;
     private final Map<String, Object> pathValues;
     private final boolean score;
-
-    private static DisjunctionPostingEntry getDisjunctionPostingEntry(
-            final TreeMap<Integer, DisjunctionPostingEntry> map,
-            final Integer iId) {
-        return Objects.nonNull(iId) ? map.get(iId) : null;
-    }
-
-    private static Integer getIdSafely(
-            final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getIId() : null;
-    }
-
-    private static PredicateType getTypeSafely(
-            final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getType() : null;
-    }
-
-    private static Integer getOrderSafely(
-            Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>> entry) {
-        final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(entry.getValue()
-                .getValue(),
-                entry.getValue()
-                        .getKey());
-        return disjunctionPostingEntry != null ? disjunctionPostingEntry.getOrder() : Integer.MAX_VALUE;
-    }
 
     public Map<String, Double> getMatches() {
         final Map<String, Double> result = Maps.newHashMap();
@@ -110,48 +76,39 @@ public class CNFMatcher {
                 .forEach(k -> {
                     final TreeSet<Integer> links = invertedIndex.getLinkages()
                             .get(k);
-                    final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists = getPostingListsCNF(
-                            table,
-                            k);
-                    initializeCurrentEntriesCNF(pLists);
+                    final CursorHeap<DisjunctionPostingEntry> cursors = new CursorHeap<>(getPostingListsCNF(table, k),
+                            POSTING_ORDER);
                     /* Processing k = 0 and k = 1 are identical */
                     if (k == 0) {
                         k = 1;
                     }
-                    if (pLists.length < k) {
+                    if (cursors.size() < k) {
                         /* Too few posting lists for any conjunction to be satisfied */
                         return;
                     }
                     int nextID = 0;
-                    while (canContinue(pLists, k)) {
+                    while (canContinue(cursors, k)) {
                         /*
                          * Check if the first k posting lists have the same conjunction ID in their
                          * current entries
                          */
-                        if (sameConjunctionCheck(pLists, k - 1)) {
+                        if (sameConjunctionCheck(cursors, k - 1)) {
                             /*
                              * For each disjunction in the current CNF, one counter is initialized to the
                              * negative number of EXCLUDED predicates
                              */
-                            final Integer[] counters = getCounters(disjunctionCounters,
-                                    pLists[0].getValue()
-                                            .getKey());
+                            final Integer[] counters = getCounters(disjunctionCounters, cursors.id(0));
 
-                            disjunctionEvaluationCheck(result, pLists, k, counters);
+                            disjunctionEvaluationCheck(result, cursors, k, counters);
 
                             /* nextID is the smallest possible ID after current ID */
-                            nextID = getNextHigherId(links,
-                                    pLists[k - 1].getValue()
-                                            .getKey());
+                            nextID = getNextHigherId(links, cursors.id(k - 1));
 
                         } else {
                             /* Skip first k-1 posting lists */
-                            nextID = getNextId(links,
-                                    pLists[k - 1].getValue()
-                                            .getKey(),
-                                    nextID);
+                            nextID = getNextId(links, cursors.id(k - 1), nextID);
                         }
-                        skipTo(pLists, nextID);
+                        cursors.skipTo(nextID);
                     }
                 });
 
@@ -177,63 +134,25 @@ public class CNFMatcher {
                                 ChainOperator.operate(key.getPreOps(), pathValues.get(key.getName())))));
     }
 
-    private void initializeCurrentEntriesCNF(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists) {
-        Arrays.stream(pLists)
-                .forEach(pList -> pList.getValue()
-                        .setLeft(pList.getValue()
-                                .getRight()
-                                .firstEntry()
-                                .getValue()
-                                .getIId()));
-        sortByCurrentEntriesCNF(pLists);
+    private boolean canContinue(final CursorHeap<DisjunctionPostingEntry> cursors, final int k) {
+        // an entry exists only for a non-exhausted cursor
+        return Objects.nonNull(cursors.entry(k - 1));
     }
 
-    private boolean canContinue(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists,
-            final int k) {
-        return Objects.nonNull(pLists[k - 1].getValue()
-                .getKey()) && Objects.nonNull(
-                        getDisjunctionPostingEntry(pLists[k - 1].getValue()
-                                .getValue(),
-                                pLists[k - 1].getValue()
-                                        .getKey()));
-    }
-
-    private void sortByCurrentEntriesCNF(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists) {
-        Arrays.sort(pLists,
-                ID_COMPARATOR.thenComparing(TYPE_COMPARATOR)
-                        .thenComparing(ORDER_COMPARATOR));
-    }
-
-    private boolean sameConjunctionCheck(
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists,
-            final Integer k) {
-        return Objects.nonNull(getDisjunctionPostingEntry(pLists[0].getValue()
-                .getValue(),
-                pLists[0].getValue()
-                        .getKey()))
-                && Objects.nonNull(getDisjunctionPostingEntry(pLists[k].getValue()
-                        .getValue(),
-                        pLists[k].getValue()
-                                .getKey()))
-                && pLists[0].getValue()
-                        .getKey()
-                        .equals(pLists[k].getValue()
-                                .getKey());
+    private boolean sameConjunctionCheck(final CursorHeap<DisjunctionPostingEntry> cursors, final Integer k) {
+        return Objects.nonNull(cursors.entry(0))
+                && Objects.nonNull(cursors.entry(k))
+                && cursors.id(0)
+                        .equals(cursors.id(k));
     }
 
     private void disjunctionEvaluationCheck(final Map<String, Double> result,
-            final Map.Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists,
+            final CursorHeap<DisjunctionPostingEntry> cursors,
             final Integer k,
             final Integer[] counters) {
-        for (int l = 0; ((l < pLists.length) && sameConjunctionCheck(pLists, l)); l++) {
+        for (int l = 0; ((l < cursors.size()) && sameConjunctionCheck(cursors, l)); l++) {
             /* Ignore entries in the Z posting list */
-            final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(pLists[l].getValue()
-                    .getValue(),
-                    pLists[l].getValue()
-                            .getKey());
+            final DisjunctionPostingEntry disjunctionPostingEntry = cursors.entry(l);
             if (Objects.isNull(disjunctionPostingEntry) || disjunctionPostingEntry.getOrder() == -1) {
                 continue;
             }
@@ -246,10 +165,7 @@ public class CNFMatcher {
         }
         if (Arrays.stream(counters)
                 .allMatch(i -> i != 0)) {
-            final DisjunctionPostingEntry disjunctionPostingEntry = getDisjunctionPostingEntry(pLists[k - 1].getValue()
-                    .getValue(),
-                    pLists[k - 1].getValue()
-                            .getKey());
+            final DisjunctionPostingEntry disjunctionPostingEntry = cursors.entry(k - 1);
             if (Objects.nonNull(disjunctionPostingEntry)) {
                 checkAndAdd(result, disjunctionPostingEntry);
             }
@@ -288,21 +204,6 @@ public class CNFMatcher {
         return Arrays.stream(disjunctionCounters.get(iId))
                 .map(x -> -1 * x)
                 .toArray(Integer[]::new);
-    }
-
-    private void skipTo(final Entry<Key, MutablePair<Integer, TreeMap<Integer, DisjunctionPostingEntry>>>[] pLists,
-            final int nextID) {
-        IntStream.range(0, pLists.length)
-                .filter(l -> Objects.nonNull(pLists[l].getValue()
-                        .getKey())
-                        && pLists[l].getValue()
-                                .getKey() < nextID)
-                .forEach(l -> pLists[l].getValue()
-                        .setLeft(pLists[l].getValue()
-                                .getValue()
-                                .navigableKeySet()
-                                .ceiling(nextID)));
-        sortByCurrentEntriesCNF(pLists);
     }
 
 }
